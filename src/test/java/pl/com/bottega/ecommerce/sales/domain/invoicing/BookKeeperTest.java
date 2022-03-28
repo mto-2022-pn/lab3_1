@@ -13,7 +13,7 @@ import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookKeeperTest {
@@ -33,6 +33,8 @@ class BookKeeperTest {
         invoiceRequest = new InvoiceRequest(clientData);
     }
 
+    // state test
+
     @Test
     public void singlePositionRequestReturnSinglePositionInvoice() {
         when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "tax"));
@@ -45,5 +47,23 @@ class BookKeeperTest {
         invoiceRequest.add(requestItem);
         int result = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
         assertEquals(1,result);
+    }
+
+    // behavior tests
+
+    @Test
+    public void doublePositionRequestInvokeCalculateTaxMethodTwoTimes(){
+        when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "tax"));
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+
+        ProductBuilder productBuilder = new  ProductBuilder();
+        RequestItemBuilder requestItemBuilder = new RequestItemBuilder();
+        Product product = productBuilder.withPrice(new Money(10,Money.DEFAULT_CURRENCY)).withName("chleb").build();
+        RequestItem requestItem = requestItemBuilder.withProductData(product.generateSnapshot()).build();
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(requestItem);
+
+        bookKeeper.issuance(invoiceRequest,taxPolicy);
+        verify(taxPolicy, times(2)).calculateTax(any(ProductType.class),any(Money.class));
     }
 }
