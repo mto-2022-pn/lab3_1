@@ -48,6 +48,11 @@ class BookKeeperTest {
         int result = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
         assertEquals(1,result);
     }
+    @Test
+    public void nonPositionRequestReturnNonePositionInvoice() {
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+        assertEquals(0, bookKeeper.issuance(invoiceRequest, taxPolicy).getItems().size());
+    }
 
     // behavior tests
 
