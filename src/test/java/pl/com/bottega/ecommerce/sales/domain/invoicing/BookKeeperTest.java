@@ -54,7 +54,29 @@ class BookKeeperTest {
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         assertEquals(0, bookKeeper.issuance(invoiceRequest, taxPolicy).getItems().size());
     }
+    @Test
+    public void productsOnInvoiceAreValid() {
+        when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "tax"));
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
 
+        ProductBuilder productBuilder = new  ProductBuilder();
+        RequestItemBuilder requestItemBuilder = new RequestItemBuilder();
+        Product product = productBuilder.withName("herbata").withPrice(new Money(10,Money.DEFAULT_CURRENCY)).withType(ProductType.FOOD).build();
+        Product secondProduct = productBuilder.withName("kawa").withPrice(new Money(12,Money.DEFAULT_CURRENCY)).withType(ProductType.FOOD).build();
+
+        RequestItem requestItem = requestItemBuilder.withProductData(product.generateSnapshot()).build();
+        RequestItem secondRequestItem = requestItemBuilder.withProductData(secondProduct.generateSnapshot()).build();
+
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(secondRequestItem);
+
+        Invoice invoice = bookKeeper.issuance(invoiceRequest,taxPolicy);
+
+        int result = invoice.getItems().size();
+        assertEquals(2,result);
+        assertEquals(product.generateSnapshot(),invoice.getItems().get(0).getProduct());
+        assertEquals(secondProduct.generateSnapshot(),invoice.getItems().get(1).getProduct());
+    }
     // behavior tests
 
     @Test
