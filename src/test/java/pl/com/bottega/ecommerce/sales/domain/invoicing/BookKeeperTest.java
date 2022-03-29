@@ -12,6 +12,7 @@ import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -73,10 +74,14 @@ class BookKeeperTest {
     }
 
     @Test
-    public void nullRequestShouldNotInvokeCalculateTaxMethod()
+    public void emptyRequestShouldNotInvokeCalculateTaxMethod()
     {
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         bookKeeper.issuance(invoiceRequest, taxPolicy);
         verify(taxPolicy,times(0)).calculateTax(any(ProductType.class),any(Money.class));
+    }
+    @Test
+    public void methodThrowsExceptionWhenRequestIsNull() {
+        assertThrows(NullPointerException.class, () -> bookKeeper.issuance(null, taxPolicy));
     }
 }
