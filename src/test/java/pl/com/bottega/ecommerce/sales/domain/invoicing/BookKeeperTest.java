@@ -69,6 +69,45 @@ class BookKeeperTest {
         verify(taxPolicy,times(2)).calculateTax(any(ProductType.class), any(Money.class));
     }
 
-    
+    @Test
+    public void emptyListRequestShouldMakeMethodReturnEmptyListRespond(){
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+
+        int count = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
+
+        assertEquals(0,count);
+    }
+
+    @Test
+    public void methodInvokedWithNullParamsReturnException() {
+        assertThrows(NullPointerException.class, () -> bookKeeper.issuance(null, null));
+    }
+
+    @Test
+    public void methodInvokedWithEmptyListRequestShouldNotInvokeCalculateTax(){
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+
+        bookKeeper.issuance(invoiceRequest,taxPolicy);
+
+        verify(taxPolicy,times(0)).calculateTax(any(ProductType.class),any(Money.class));
+    }
+
+    @Test
+    public void sizeOfListReturnedByMethodShouldMatchTimesCalculateTaxWasInvoked(){
+        when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "tax"));
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+
+
+        Product product = Product.builder().productType(ProductType.STANDARD).build();
+        RequestItem requestItem = RequestItem.builder().productData(product.generateSnapshot()).totalCost(Money.ZERO).build();
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(requestItem);
+        int count = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
+
+
+        verify(taxPolicy,times(count)).calculateTax(any(ProductType.class), any(Money.class));
+    }
 
 }
