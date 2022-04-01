@@ -2,11 +2,15 @@ package pl.com.bottega.ecommerce.sales.domain.productscatalog;
 
 import java.util.Date;
 
+import lombok.Builder;
 import pl.com.bottega.ddd.support.domain.BaseAggregateRoot;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
+@Builder
 public class Product extends BaseAggregateRoot {
+
+    private Id id;
 
     private Money price;
 

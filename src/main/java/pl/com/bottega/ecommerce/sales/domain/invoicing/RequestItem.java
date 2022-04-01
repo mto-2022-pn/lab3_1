@@ -15,9 +15,11 @@
  */
 package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
+import lombok.Builder;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
+@Builder
 class RequestItem {
 
 	private ProductData productData;
