@@ -10,16 +10,16 @@ public class ProductBuilder {
 
     private ProductType productType;
 
-    public ProductBuilder price(Money price){
+    public ProductBuilder withPrice(Money price){
         this.price=price;
         return this;
     }
 
-    public ProductBuilder name(String name){
+    public ProductBuilder withName(String name){
         this.name = name;
         return this;
     }
-    public ProductBuilder productType(ProductType productType){
+    public ProductBuilder withProductType(ProductType productType){
         this.productType=productType;
         return this;
     }

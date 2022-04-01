@@ -11,11 +11,11 @@ public class RequestItemBuilder {
 
     private Money totalCost;
 
-    public RequestItemBuilder productData(Product product){
+    public RequestItemBuilder withProductData(Product product){
         this.productData = product.generateSnapshot();
         return this;
     }
-    public RequestItemBuilder quantity(int quantity){
+    public RequestItemBuilder withQuantity(int quantity){
         this.quantity = quantity;
         return this;
     }
