@@ -53,6 +53,12 @@ class BookKeeperTest {
     }
 
     @Test
+    void RequestForAnInvoiceZeroItemsShouldReturnAnInvoiceWithZeroItem(){
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+        int result = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
+        assertEquals(0,result);
+    }
+    @Test
     void RequestForAnInvoiceWithTwoItemsShouldInvokeCalculateTaxTwice(){
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "test tax"));
