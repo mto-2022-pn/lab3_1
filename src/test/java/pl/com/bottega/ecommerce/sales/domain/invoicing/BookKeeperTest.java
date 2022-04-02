@@ -58,6 +58,26 @@ class BookKeeperTest {
         int result = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
         assertEquals(0,result);
     }
+
+    @Test
+    void RequestForAnInvoiceWithFewItemsShouldReturnAnInvoiceWithNumberOfItemsEqualToTheRequest(){
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+        when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "test tax"));
+
+        ProductDataBuilder productdataBuilder = new  ProductDataBuilder();
+        RequestItemBuilder requestItemBuilder = new RequestItemBuilder();
+        ProductData []product = {productdataBuilder.withPrice(new Money(10,Money.DEFAULT_CURRENCY)).withName("Corn flakes").withType(ProductType.FOOD).build(),
+                productdataBuilder.withPrice(new Money(5,Money.DEFAULT_CURRENCY)).withName("Natural yoghurt").withType(ProductType.FOOD).build(),
+                productdataBuilder.withPrice(new Money(50,Money.DEFAULT_CURRENCY)).withName("Aspirin").withType(ProductType.DRUG).build()};
+        RequestItem requestItem;
+        for (ProductData productData : product) {
+            requestItem = requestItemBuilder.withProductData(productData).build();
+            invoiceRequest.add(requestItem);
+        }
+        int result = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
+        assertEquals(3,result);
+    }
+
     @Test
     void RequestForAnInvoiceWithTwoItemsShouldInvokeCalculateTaxTwice(){
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
@@ -68,8 +88,8 @@ class BookKeeperTest {
         ProductData []product = {productdataBuilder.withPrice(new Money(20,Money.DEFAULT_CURRENCY)).withName("Oat flakes").withType(ProductType.FOOD).build(),
                 productdataBuilder.withPrice(new Money(30,Money.DEFAULT_CURRENCY)).withName("Strawberry yoghurt").withType(ProductType.FOOD).build()};
         RequestItem requestItem;
-        for(int i=0;i<product.length;i++){
-            requestItem = requestItemBuilder.withProductData(product[i]).build();
+        for (ProductData productData : product) {
+            requestItem = requestItemBuilder.withProductData(productData).build();
             invoiceRequest.add(requestItem);
         }
         bookKeeper.issuance(invoiceRequest,taxPolicy);
