@@ -102,4 +102,15 @@ class BookKeeperTest {
         bookKeeper.issuance(invoiceRequest,taxPolicy);
         verify(taxPolicy, times(0)).calculateTax(any(ProductType.class),any(Money.class));
     }
+
+    @Test
+    void RequestForAnInvoiceWithNullInvoiceRequestandNullTaxPolicyShouldThrowNullPointerException(){
+        try{
+            bookKeeper.issuance(null, null);
+            fail("expected NullPointerException");
+        }catch(NullPointerException ignored){
+        }
+    }
+
+
 }
