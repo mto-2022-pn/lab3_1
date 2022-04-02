@@ -17,7 +17,7 @@ import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 @ExtendWith(MockitoExtension.class)
 class BookKeeperTest {
@@ -52,4 +52,21 @@ class BookKeeperTest {
         assertEquals(1,result);
     }
 
+    @Test
+    void RequestForAnInvoiceWithTwoItemsShouldInvokeCalculateTaxTwice(){
+        when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
+        when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "test tax"));
+
+        ProductDataBuilder productdataBuilder = new  ProductDataBuilder();
+        RequestItemBuilder requestItemBuilder = new RequestItemBuilder();
+        ProductData []product = {productdataBuilder.withPrice(new Money(20,Money.DEFAULT_CURRENCY)).withName("Oat flakes").withType(ProductType.FOOD).build(),
+                productdataBuilder.withPrice(new Money(30,Money.DEFAULT_CURRENCY)).withName("Strawberry yoghurt").withType(ProductType.FOOD).build()};
+        RequestItem requestItem;
+        for(int i=0;i<product.length;i++){
+            requestItem = requestItemBuilder.withProductData(product[i]).build();
+            invoiceRequest.add(requestItem);
+        }
+        bookKeeper.issuance(invoiceRequest,taxPolicy);
+        verify(taxPolicy, times(2)).calculateTax(any(ProductType.class),any(Money.class));
+    }
 }
