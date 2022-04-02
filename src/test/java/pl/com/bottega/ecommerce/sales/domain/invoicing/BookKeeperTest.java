@@ -39,7 +39,7 @@ class BookKeeperTest {
     }
 
     @Test
-    void RequestForAnInvoiceWithOneItemShouldReturnAnInvoiceWithOneItem(){
+    void requestForAnInvoiceWithOneItemShouldReturnAnInvoiceWithOneItem(){
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "test tax"));
 
@@ -53,14 +53,14 @@ class BookKeeperTest {
     }
 
     @Test
-    void RequestForAnInvoiceZeroItemsShouldReturnAnInvoiceWithZeroItem(){
+    void requestForAnInvoiceZeroItemsShouldReturnAnInvoiceWithZeroItem(){
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         int result = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
         assertEquals(0,result);
     }
 
     @Test
-    void RequestForAnInvoiceWithFewItemsShouldReturnAnInvoiceWithNumberOfItemsEqualToTheRequest(){
+    void requestForAnInvoiceWithFewItemsShouldReturnAnInvoiceWithNumberOfItemsEqualToTheRequest(){
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "test tax"));
 
@@ -79,7 +79,7 @@ class BookKeeperTest {
     }
 
     @Test
-    void RequestForAnInvoiceWithTwoItemsShouldInvokeCalculateTaxTwice(){
+    void requestForAnInvoiceWithTwoItemsShouldInvokeCalculateTaxTwice(){
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "test tax"));
 
@@ -97,14 +97,14 @@ class BookKeeperTest {
     }
 
     @Test
-    void RequestForAnInvoiceWithZeroItemsShouldInvokeCalculateTaxZeroTimes(){
+    void requestForAnInvoiceWithZeroItemsShouldInvokeCalculateTaxZeroTimes(){
         when(invoiceFactory.create(clientData)).thenReturn(new Invoice(Id.generate(), clientData));
         bookKeeper.issuance(invoiceRequest,taxPolicy);
         verify(taxPolicy, times(0)).calculateTax(any(ProductType.class),any(Money.class));
     }
 
     @Test
-    void RequestForAnInvoiceWithNullInvoiceRequestandNullTaxPolicyShouldThrowNullPointerException(){
+    void requestForAnInvoiceWithNullInvoiceRequestandNullTaxPolicyShouldThrowNullPointerException(){
         try{
             bookKeeper.issuance(null, null);
             fail("expected NullPointerException");
