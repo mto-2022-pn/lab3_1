@@ -9,10 +9,10 @@ import java.util.concurrent.locks.ReadWriteLock;
 public class RequestItemBuilder {
     private ProductData productData;
 
-    private int quantity;
+    private int quantity=1;
 
-    private Money totalCost;
-
+    private Money totalCost=Money.ZERO;
+    public RequestItemBuilder(){}
     public RequestItemBuilder withProductData(ProductData productData){
         this.productData=productData;
         return this;
