@@ -22,70 +22,58 @@ class BookKeeperTest {
     @Mock
     private TaxPolicy taxPolicy;
     private BookKeeper bookKeeper;
+    private InvoiceRequest request;
 
     @BeforeEach
     void setUp() {
         this.bookKeeper = new BookKeeper(new InvoiceFactory());
+        this.request = new InvoiceRequest(new ClientData(new Id("222440"), "Szymon"));
+        when(taxPolicy.calculateTax(
+                any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "unknown"));
     }
 
     @Test
     void testCase1() {
-        when(taxPolicy.calculateTax(
-                any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "unknown"));
-        InvoiceRequest request = new InvoiceRequest(new ClientData(new Id("222440"), "Szymon"));
         request.add(new RequestItemBuilder().build());
-        Invoice invoice = this.bookKeeper.issuance(request, taxPolicy);
+        Invoice invoice = this.bookKeeper.issuance(this.request, taxPolicy);
         assertEquals(invoice.getItems().size(), 1);
     }
 
     @Test
     void testCase2() {
-        when(taxPolicy.calculateTax(
-                any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "unknown"));
-        InvoiceRequest request = new InvoiceRequest(new ClientData(new Id("222440"), "Szymon"));
         request.add(new RequestItemBuilder().build());
         request.add(new RequestItemBuilder().build());
-        this.bookKeeper.issuance(request, taxPolicy);
+        this.bookKeeper.issuance(this.request, taxPolicy);
         verify(taxPolicy, times(2)).calculateTax(any(ProductType.class), any(Money.class));
     }
 
     @Test
     void testReturnWithEmptyRequest() {
-        InvoiceRequest request = new InvoiceRequest(new ClientData(new Id("222440"), "Szymon"));
-        Invoice invoice = this.bookKeeper.issuance(request, null);
+        Invoice invoice = this.bookKeeper.issuance(this.request, taxPolicy);
         assertEquals(invoice.getItems().size(), 0);
     }
 
     @Test
     void testBehaviorWithEmptyRequest() {
-        when(taxPolicy.calculateTax(
-                any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "unknown"));
-        InvoiceRequest request = new InvoiceRequest(new ClientData(new Id("222440"), "Szymon"));
-        this.bookKeeper.issuance(request, taxPolicy);
+        this.bookKeeper.issuance(this.request, taxPolicy);
         verify(taxPolicy, never()).calculateTax(any(ProductType.class), any(Money.class));
     }
 
     @Test
     void testBehaviorWithDifferentProductTypes() {
-        when(taxPolicy.calculateTax(
-                any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "unknown"));
-        InvoiceRequest request = new InvoiceRequest(new ClientData(new Id("222440"), "Szymon"));
         request.add(new RequestItemBuilder().withProductType(ProductType.DRUG).build());
         request.add(new RequestItemBuilder().withProductType(ProductType.FOOD).build());
         request.add(new RequestItemBuilder().withProductType(ProductType.STANDARD).build());
-        this.bookKeeper.issuance(request, taxPolicy);
+        this.bookKeeper.issuance(this.request, taxPolicy);
         verify(taxPolicy, times(3)).calculateTax(any(ProductType.class), any(Money.class));
     }
 
     @Test
     void testReturnWithDifferentProductTypes() {
-        when(taxPolicy.calculateTax(
-                any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "unknown"));
-        InvoiceRequest request = new InvoiceRequest(new ClientData(new Id("222440"), "Szymon"));
         request.add(new RequestItemBuilder().withProductType(ProductType.DRUG).build());
         request.add(new RequestItemBuilder().withProductType(ProductType.FOOD).build());
         request.add(new RequestItemBuilder().withProductType(ProductType.STANDARD).build());
-        Invoice invoice = this.bookKeeper.issuance(request, taxPolicy);
+        Invoice invoice = this.bookKeeper.issuance(this.request, taxPolicy);
         assertEquals(invoice.getItems().stream()
                 .filter(elem -> elem.getProduct().getType().equals(ProductType.STANDARD)).count(),1);
         assertEquals(invoice.getItems().stream()
