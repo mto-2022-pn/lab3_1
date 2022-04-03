@@ -5,29 +5,34 @@ import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductDataBuilder;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class InvoiceRequestBuilder {
     private ClientData client = new ClientData(Id.generate(), "Jan");
-    private ProductDataBuilder productDataBuilder;
+    private final ProductDataBuilder productDataBuilder = new ProductDataBuilder();
     private final RequestItem requestItem = new RequestItem(productDataBuilder.build(),
             1, Money.ZERO);
-    private InvoiceRequest sampleInvoiceRequest;
+    private final List<RequestItem> requestItems = new ArrayList<>();
 
     public InvoiceRequest build() {
-        sampleInvoiceRequest = new InvoiceRequest(client);
-        return sampleInvoiceRequest;
+        InvoiceRequest invoiceRequest = new InvoiceRequest(client);
+        for (RequestItem requestItem : requestItems)
+            invoiceRequest.add(requestItem);
+        return invoiceRequest;
     }
 
     public InvoiceRequestBuilder withClient(ClientData client) {
         this.client = client;
         return this;
     }
-    public InvoiceRequest addSampleRequestItem() {
-        sampleInvoiceRequest.add(requestItem);
-        return sampleInvoiceRequest;
+    public InvoiceRequestBuilder addSampleRequestItem() {
+        requestItems.add(requestItem);
+        return this;
     }
-    public InvoiceRequest addRequestItem(RequestItem requestItem) {
-        sampleInvoiceRequest.add(requestItem);
-        return sampleInvoiceRequest;
+    public InvoiceRequestBuilder addRequestItem(RequestItem requestItem) {
+        requestItems.add(requestItem);
+        return this;
     }
 }
