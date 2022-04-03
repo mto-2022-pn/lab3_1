@@ -9,10 +9,10 @@ import java.util.Date;
 public class ProductDataBuilder {
     private Id productId = Id.generate();
 
-    private Money price = new Money(1);
-    private String name = "Tomasz";
+    private Money price = Money.ZERO;
+    private String name = "ProductName";
 
-    private Date snapshotDate = new Date(2000, Calendar.MARCH, 10);
+    private Date snapshotDate = new Date();
 
     private ProductType type = ProductType.STANDARD;
 

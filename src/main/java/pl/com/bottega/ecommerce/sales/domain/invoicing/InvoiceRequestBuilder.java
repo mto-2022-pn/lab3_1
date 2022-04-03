@@ -9,23 +9,25 @@ import pl.com.bottega.ecommerce.sharedkernel.Money;
 public class InvoiceRequestBuilder {
     private ClientData client = new ClientData(Id.generate(), "Jan");
     private ProductDataBuilder productDataBuilder;
-    private RequestItem requestItem = new RequestItem(productDataBuilder.sampleProductData().build(),
-            1, new Money(1));
+    private final RequestItem requestItem = new RequestItem(productDataBuilder.build(),
+            1, Money.ZERO);
+    private InvoiceRequest sampleInvoiceRequest;
 
-    public InvoiceRequestBuilder sampleInvoice() {
-        return this;
-    }
     public InvoiceRequest build() {
-        return new InvoiceRequest(client);
+        sampleInvoiceRequest = new InvoiceRequest(client);
+        return sampleInvoiceRequest;
     }
 
     public InvoiceRequestBuilder withClient(ClientData client) {
         this.client = client;
         return this;
     }
-
-    public InvoiceRequestBuilder withRequestItem(RequestItem requestItem) {
-        this.requestItem = requestItem;
-        return this;
+    public InvoiceRequest addSampleRequestItem() {
+        sampleInvoiceRequest.add(requestItem);
+        return sampleInvoiceRequest;
+    }
+    public InvoiceRequest addRequestItem(RequestItem requestItem) {
+        sampleInvoiceRequest.add(requestItem);
+        return sampleInvoiceRequest;
     }
 }
