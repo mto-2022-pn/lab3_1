@@ -12,6 +12,16 @@ public class MoneyBuilder {
         return this;
     }
 
+    public MoneyBuilder withDenomination(double denomination) {
+        this.denomination = denomination;
+        return this;
+    }
+
+    public MoneyBuilder withCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+        return this;
+    }
+
     public Money build() {
         return new Money(denomination, currencyCode);
     }

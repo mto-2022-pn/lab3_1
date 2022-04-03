@@ -11,6 +11,16 @@ public class ClientDataBuilder {
         return this;
     }
 
+    public ClientDataBuilder withID(Id id) {
+        this.id = id;
+        return this;
+    }
+
+    public ClientDataBuilder withName(String name) {
+        this.name = name;
+        return this;
+    }
+
     public ClientData build() {
         return new ClientData(id, name);
     }
