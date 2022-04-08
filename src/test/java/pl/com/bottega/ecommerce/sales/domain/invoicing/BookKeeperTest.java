@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
+import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductDataBuilder;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
@@ -67,5 +69,34 @@ class BookKeeperTest {
 
         verify(taxPolicy, times(2))
                 .calculateTax(any(ProductType.class), any(Money.class));
+    }
+
+    @Test
+    void differentProductTypesInvoiceRequest_ShouldCallCalculateTaxMethodNumOfProductsTimes() {
+        ProductDataBuilder productDataBuilder = new ProductDataBuilder();
+
+        ProductData standardProductData = productDataBuilder.withType(ProductType.STANDARD).build();
+        ProductData foodProductData = productDataBuilder.withType(ProductType.FOOD).build();
+        ProductData drugProductData = productDataBuilder.withType(ProductType.DRUG).build();
+
+        invoiceRequest.add(requestItemBuilder.withProductData(standardProductData).build());
+        invoiceRequest.add(requestItemBuilder.withProductData(foodProductData).build());
+        invoiceRequest.add(requestItemBuilder.withProductData(drugProductData).build());
+
+        bookKeeper.issuance(invoiceRequest, taxPolicy);
+
+        verify(taxPolicy, times(invoiceRequest.getItems().size()))
+                .calculateTax(any(ProductType.class), any(Money.class));
+    }
+
+    @Test
+    void differentProductQuantitiesInvoiceRequest_ShouldReturnInvoiceWithNumOfProducts() {
+        invoiceRequest.add(requestItemBuilder.withQuantity(0).build());
+        invoiceRequest.add(requestItemBuilder.withQuantity(12).build());
+        invoiceRequest.add(requestItemBuilder.withQuantity(100000).build());
+
+        Invoice resultInvoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
+
+        assertEquals(invoiceRequest.getItems().size(), resultInvoice.getItems().size());
     }
 }
