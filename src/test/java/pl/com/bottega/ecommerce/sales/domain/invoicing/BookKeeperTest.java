@@ -45,4 +45,21 @@ class BookKeeperTest {
 
         assertEquals(1, resultInvoice.getItems().size());
     }
+
+    @Test
+    void twoItemsInvoiceRequest_ShouldCallCalculateTaxMethodTwice() {
+        Mockito.when(taxPolicy.calculateTax(Mockito.any(ProductType.class), Mockito.any(Money.class)))
+                .thenReturn(new Tax(Money.ZERO, "someTax"));
+
+        for (int i = 0; i < 2; i++) {
+            ProductData productData = productDataBuilder.build();
+            RequestItem requestItem = new RequestItem(productData, 1, Money.ZERO);
+            invoiceRequest.add(requestItem);
+        }
+
+        Invoice resultInvoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
+
+        Mockito.verify(taxPolicy, Mockito.times(2))
+                .calculateTax(Mockito.any(ProductType.class), Mockito.any(Money.class));
+    }
 }
