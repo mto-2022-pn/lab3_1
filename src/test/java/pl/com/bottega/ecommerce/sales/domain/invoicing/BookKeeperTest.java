@@ -27,8 +27,23 @@ class BookKeeperTest {
         invoiceRequest = new InvoiceRequest(new ClientDataBuilder().build());
         requestItemBuilder = new RequestItemBuilder();
 
-        when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class)))
+        lenient().when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class)))
                 .thenReturn(new TaxBuilder().build());
+    }
+
+    @Test
+    void emptyInvoiceRequest_shouldReturnInvoiceWithNoItems() {
+        Invoice resultInvoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
+
+        assertEquals(0, resultInvoice.getItems().size());
+    }
+
+    @Test
+    void emptyInvoiceRequest_shouldNotCallCalculateTaxMethod() {
+        bookKeeper.issuance(invoiceRequest, taxPolicy);
+
+        verify(taxPolicy, times(0))
+                .calculateTax(any(ProductType.class), any(Money.class));
     }
 
     @Test
