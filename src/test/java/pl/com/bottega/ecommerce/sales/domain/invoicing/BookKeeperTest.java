@@ -1,18 +1,14 @@
 package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
+import canonicalmodel.publishedlanguage.ClientDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
-import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
-import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
-import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductDataBuilder;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
@@ -23,23 +19,21 @@ class BookKeeperTest {
 
     private BookKeeper bookKeeper;
     private InvoiceRequest invoiceRequest;
-    private ProductDataBuilder productDataBuilder;
+    private RequestItemBuilder requestItemBuilder;
 
     @BeforeEach
     void setUp() {
         bookKeeper = new BookKeeper(new InvoiceFactory());
-        ClientData clientData = new ClientData(Id.generate(), "someClient");
-        invoiceRequest = new InvoiceRequest(clientData);
-        productDataBuilder = new ProductDataBuilder();
+        invoiceRequest = new InvoiceRequest(new ClientDataBuilder().build());
+        requestItemBuilder = new RequestItemBuilder();
 
         when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class)))
-                .thenReturn(new Tax(Money.ZERO, "someTax"));
+                .thenReturn(new TaxBuilder().build());
     }
 
     @Test
     void singleItemInvoiceRequest_ShouldReturnInvoiceWithOneItem() {
-        ProductData productData = productDataBuilder.build();
-        RequestItem requestItem = new RequestItem(productData, 1, Money.ZERO);
+        RequestItem requestItem = requestItemBuilder.build();
         invoiceRequest.add(requestItem);
 
         Invoice resultInvoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
@@ -50,12 +44,11 @@ class BookKeeperTest {
     @Test
     void twoItemsInvoiceRequest_ShouldCallCalculateTaxMethodTwice() {
         for (int i = 0; i < 2; i++) {
-            ProductData productData = productDataBuilder.build();
-            RequestItem requestItem = new RequestItem(productData, 1, Money.ZERO);
+            RequestItem requestItem = requestItemBuilder.build();
             invoiceRequest.add(requestItem);
         }
 
-        Invoice resultInvoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
+        bookKeeper.issuance(invoiceRequest, taxPolicy);
 
         verify(taxPolicy, times(2))
                 .calculateTax(any(ProductType.class), any(Money.class));
