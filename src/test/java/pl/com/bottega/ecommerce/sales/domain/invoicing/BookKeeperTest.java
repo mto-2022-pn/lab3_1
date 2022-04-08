@@ -2,12 +2,12 @@ package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
@@ -31,16 +31,17 @@ class BookKeeperTest {
         ClientData clientData = new ClientData(Id.generate(), "someClient");
         invoiceRequest = new InvoiceRequest(clientData);
         productDataBuilder = new ProductDataBuilder();
+
+        when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class)))
+                .thenReturn(new Tax(Money.ZERO, "someTax"));
     }
 
     @Test
     void singleItemInvoiceRequest_ShouldReturnInvoiceWithOneItem() {
-        Mockito.when(taxPolicy.calculateTax(Mockito.any(ProductType.class), Mockito.any(Money.class)))
-                .thenReturn(new Tax(Money.ZERO, "someTax"));
-
         ProductData productData = productDataBuilder.build();
         RequestItem requestItem = new RequestItem(productData, 1, Money.ZERO);
         invoiceRequest.add(requestItem);
+
         Invoice resultInvoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
 
         assertEquals(1, resultInvoice.getItems().size());
@@ -48,9 +49,6 @@ class BookKeeperTest {
 
     @Test
     void twoItemsInvoiceRequest_ShouldCallCalculateTaxMethodTwice() {
-        Mockito.when(taxPolicy.calculateTax(Mockito.any(ProductType.class), Mockito.any(Money.class)))
-                .thenReturn(new Tax(Money.ZERO, "someTax"));
-
         for (int i = 0; i < 2; i++) {
             ProductData productData = productDataBuilder.build();
             RequestItem requestItem = new RequestItem(productData, 1, Money.ZERO);
@@ -59,7 +57,7 @@ class BookKeeperTest {
 
         Invoice resultInvoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
 
-        Mockito.verify(taxPolicy, Mockito.times(2))
-                .calculateTax(Mockito.any(ProductType.class), Mockito.any(Money.class));
+        verify(taxPolicy, times(2))
+                .calculateTax(any(ProductType.class), any(Money.class));
     }
 }
