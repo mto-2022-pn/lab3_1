@@ -47,22 +47,22 @@ public class Product extends BaseAggregateRoot {
         private String name;
         private ProductType productType;
 
-        public ProductBuilder id(Id id) {
+        public ProductBuilder withId(Id id) {
             this.id = id;
             return this;
         }
 
-        public ProductBuilder price(Money price) {
+        public ProductBuilder withPrice(Money price) {
             this.price = price;
             return this;
         }
 
-        public ProductBuilder name(String name) {
+        public ProductBuilder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public ProductBuilder productType(ProductType productType) {
+        public ProductBuilder withProductType(ProductType productType) {
             this.productType = productType;
             return this;
         }
