@@ -60,6 +60,17 @@ class BookKeeperTest {
     @Test
     void testCase2()
     {
-        
+
+        Product product = new Product(Id.generate(),
+                                        new Money(60.00),
+                                        "Produkt",
+                                        ProductType.FOOD);
+        RequestItem requestItem = new RequestItem(product.generateSnapshot(), 1, product.getPrice());
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(requestItem);
+        bookKeeper.issuance(invoiceRequest,taxPolicy);
+
+        int count = bookKeeper.issuance(invoiceRequest,taxPolicy).getItems().size();
+        assertEquals(2,count);
     }
 }
