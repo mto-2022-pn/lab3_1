@@ -77,4 +77,19 @@ class BookKeeperTest {
                 any(ProductType.class), any(Money.class)
         );
     }
+
+    @Test
+    void requestInvoiceWithManyItems() {
+        when(taxPolicy.calculateTax(
+                any(ProductType.class), any(Money.class)
+        )).thenReturn(new Tax(Money.ZERO, DEFAULT));
+
+        int t = new Random().nextInt(100) + 2;
+
+        for(int i = 0; i < t; ++i)
+            invoiceRequest.add(new RequestItemBuilder().build());
+
+        Invoice invoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
+        assertEquals(invoice.getItems().size(), t);
+    }
 }
