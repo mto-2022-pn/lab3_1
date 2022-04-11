@@ -15,6 +15,8 @@ import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
+import java.util.Random;
+
 @ExtendWith(MockitoExtension.class)
 class BookKeeperTest {
 
@@ -34,14 +36,14 @@ class BookKeeperTest {
         invoiceRequest = new InvoiceRequest(
                 new ClientData(new Id(ID), NAME)
         );
-
-        when(taxPolicy.calculateTax(
-                any(ProductType.class), any(Money.class)
-        )).thenReturn(new Tax(Money.ZERO, DEFAULT));
     }
 
     @Test
     void requestInvoiceWithOneItem() {
+        when(taxPolicy.calculateTax(
+                any(ProductType.class), any(Money.class)
+        )).thenReturn(new Tax(Money.ZERO, DEFAULT));
+
         invoiceRequest.add(new RequestItemBuilder().build());
         Invoice invoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
         assertEquals(invoice.getItems().size(), 1);
@@ -49,6 +51,10 @@ class BookKeeperTest {
 
     @Test
     void requestInvoiceWithTwoItem() {
+        when(taxPolicy.calculateTax(
+                any(ProductType.class), any(Money.class)
+        )).thenReturn(new Tax(Money.ZERO, DEFAULT));
+
         invoiceRequest.add(new RequestItemBuilder().build());
         invoiceRequest.add(new RequestItemBuilder().build());
         bookKeeper.issuance(invoiceRequest, taxPolicy);
@@ -56,5 +62,11 @@ class BookKeeperTest {
                 .calculateTax(
                         any(ProductType.class), any(Money.class)
                 );
+    }
+
+    @Test
+    void requestInvoiceWithNoItems() {
+        Invoice invoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
+        assertEquals(invoice.getItems().size(), 0);
     }
 }
