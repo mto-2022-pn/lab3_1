@@ -13,8 +13,14 @@ class BookKeeperTest {
     }
 
     @Test
-    void test() {
-        fail("not implemented");
+    void testCase1() {
+
     }
+
+    @Test
+    void testCase2() {
+
+    }
+
 
 }
