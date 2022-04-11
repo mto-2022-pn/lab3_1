@@ -46,4 +46,15 @@ class BookKeeperTest {
         Invoice invoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
         assertEquals(invoice.getItems().size(), 1);
     }
+
+    @Test
+    void requestInvoiceWithTwoItem() {
+        invoiceRequest.add(new RequestItemBuilder().build());
+        invoiceRequest.add(new RequestItemBuilder().build());
+        bookKeeper.issuance(invoiceRequest, taxPolicy);
+        verify(taxPolicy, times(2))
+                .calculateTax(
+                        any(ProductType.class), any(Money.class)
+                );
+    }
 }
