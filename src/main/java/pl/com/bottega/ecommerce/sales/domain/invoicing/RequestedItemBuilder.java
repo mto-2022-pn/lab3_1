@@ -1,4 +1,5 @@
 package pl.com.bottega.ecommerce.sales.domain.invoicing;
+import pl.com.bottega.ecommerce.sales.domain.productscatalog.Product;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductBuilder;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
@@ -12,8 +13,8 @@ public class RequestedItemBuilder {
         return new RequestItem(this.productData, this.quantity, this.totalCost);
     }
 
-    public RequestedItemBuilder withProductData(ProductData productData){
-        this.productData = productData;
+    public RequestedItemBuilder withProductData(Product product){
+        this.productData = product.generateSnapshot();
         return this;
     }
 
