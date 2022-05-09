@@ -10,14 +10,14 @@ public class ProductDataBuilder {
 
     private Id productId = new Id("1");
     private Money price = null;
-    private String name = "Rower";
+    private String name = "Corn";
     private Date snapshotDate = new Date();
     private ProductType type = ProductType.FOOD;
 
     public ProductDataBuilder generateDefaultProductDataBuilder()
     {
-        MoneyBuilder builder = new MoneyBuilder();
-        price = builder.generateDefaultMoneyBuilder().build();
+        MoneyBuilder moneyBuilder = new MoneyBuilder();
+        price = moneyBuilder.build();
         return this;
     }
 

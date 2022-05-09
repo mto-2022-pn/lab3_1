@@ -13,13 +13,30 @@ public class RequestItemBuilder {
 
 	private Money totalCost;
 
-    public RequestItemBuilder generateDefaultProductDataBuilder()
+    RequestItemBuilder()
     {
         ProductDataBuilder productDataBuilder = new ProductDataBuilder();
         productData = productDataBuilder.generateDefaultProductDataBuilder().build();
 
         MoneyBuilder moneyBuilder = new MoneyBuilder();
-        totalCost = moneyBuilder.generateDefaultMoneyBuilder().build();
+        totalCost = moneyBuilder.build();
+    }
+
+    public RequestItemBuilder withProductData(ProductData productData)
+    {
+        this.productData = productData;
+        return this;
+    }
+
+    public RequestItemBuilder withQuantity(int quantity)
+    {
+        this.quantity = quantity;
+        return this;
+    }
+
+    public RequestItemBuilder withTotalCost(Money totalCost)
+    {
+        this.totalCost = totalCost;
         return this;
     }
 

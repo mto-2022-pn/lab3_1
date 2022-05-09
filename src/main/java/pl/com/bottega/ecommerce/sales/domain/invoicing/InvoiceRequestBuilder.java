@@ -9,34 +9,37 @@ import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 public class InvoiceRequestBuilder {
     
     private ClientData client;
-    private List<RequestItem> items = new ArrayList<>();
+    private List<RequestItem> items;
 
-    public InvoiceRequestBuilder generateDefaultInvoiceRequestBuilder()
+    InvoiceRequestBuilder()
     {
         client = new ClientData(new Id("00"),"Name");
         items = new ArrayList<RequestItem>();
-        items.add((new RequestItemBuilder()).generateDefaultProductDataBuilder().build());
-        return this;
+        items.add((new RequestItemBuilder()).build());
     }
 
-    public InvoiceRequestBuilder generateDataForInvoiceWithXItems(int x)
+    public InvoiceRequestBuilder withInvoiceWithXDefaultItems(int x)
     {
-        client = new ClientData(new Id("00"),"Name");
         items = new ArrayList<RequestItem>();
         for(int i=0;i<x;i++)
         {
-            items.add((new RequestItemBuilder()).generateDefaultProductDataBuilder().build());
+            items.add((new RequestItemBuilder()).build());
         }
         return this;
     }
 
-    public InvoiceRequestBuilder addClient(ClientData client) {
+    public InvoiceRequestBuilder withClient(ClientData client) {
         this.client = client;
         return this;
     }
 
-    public InvoiceRequestBuilder addItems(List<RequestItem> items) {
+    public InvoiceRequestBuilder withItems(List<RequestItem> items) {
         this.items = items;
+        return this;
+    }
+
+    public InvoiceRequestBuilder addItem(RequestItem item) {
+        items.add(item);
         return this;
     }
 

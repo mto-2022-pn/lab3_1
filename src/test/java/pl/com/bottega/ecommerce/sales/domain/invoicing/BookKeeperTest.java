@@ -42,7 +42,7 @@ class BookKeeperTest {
                 .thenReturn(new Tax(Money.ZERO, "Test Tax"));
 
         
-        invoiceRequest = new InvoiceRequestBuilder().generateDefaultInvoiceRequestBuilder().build();
+        invoiceRequest = new InvoiceRequestBuilder().build();
         Invoice invoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
 
         assertTrue(invoice.getItems().size() == 1);
@@ -55,7 +55,7 @@ class BookKeeperTest {
                 .thenReturn(new Tax(Money.ZERO, "Test Tax"));
 
         
-        invoiceRequest = new InvoiceRequestBuilder().generateDataForInvoiceWithXItems(2).build();
+        invoiceRequest = new InvoiceRequestBuilder().withInvoiceWithXDefaultItems(2).build();
         bookKeeper.issuance(invoiceRequest, taxPolicy);
 
         verify(taxPolicy,times(2)).calculateTax(any(ProductType.class),any(Money.class));
