@@ -15,8 +15,8 @@ public class RequestItemBuilder {
 
     public RequestItemBuilder generateDefaultProductDataBuilder()
     {
-        ProductDataBuilder bDataBuilder = new ProductDataBuilder();
-        productData = bDataBuilder.generateDefaultProductDataBuilder().build();
+        ProductDataBuilder productDataBuilder = new ProductDataBuilder();
+        productData = productDataBuilder.generateDefaultProductDataBuilder().build();
 
         MoneyBuilder moneyBuilder = new MoneyBuilder();
         totalCost = moneyBuilder.generateDefaultMoneyBuilder().build();
