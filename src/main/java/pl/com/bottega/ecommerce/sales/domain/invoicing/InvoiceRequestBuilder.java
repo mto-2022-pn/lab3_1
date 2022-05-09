@@ -19,6 +19,17 @@ public class InvoiceRequestBuilder {
         return this;
     }
 
+    public InvoiceRequestBuilder generateDataForInvoiceWithXItems(int x)
+    {
+        client = new ClientData(new Id("00"),"Name");
+        items = new ArrayList<RequestItem>();
+        for(int i=0;i<x;i++)
+        {
+            items.add((new RequestItemBuilder()).generateDefaultProductDataBuilder().build());
+        }
+        return this;
+    }
+
     public InvoiceRequestBuilder addClient(ClientData client) {
         this.client = client;
         return this;
