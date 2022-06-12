@@ -49,7 +49,7 @@ class BookKeeperTest {
 	}
 
 	@Test
-	void invoiceWithManyFieldsRequestShouldReturnInvoiceWithManyFields(){
+	void invoiceWithManyFieldsRequestShouldReturnInvoiceWithManyFields() {
 		when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(new Tax(Money.ZERO, "tax"));
 
 		invoiceRequest.add(new RequestItemBuilder().build());
@@ -62,8 +62,14 @@ class BookKeeperTest {
 	}
 
 	@Test
-	void invoiceWithZeroFieldsRequestShouldReturnInvoiceWithZeroFields(){
+	void invoiceWithZeroFieldsRequestShouldReturnInvoiceWithZeroFields() {
 		Invoice invoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
 		assertTrue(invoice.getItems().isEmpty());
+	}
+
+	@Test
+	void invoiceWithZeroFieldsRequestShouldCalculateTaxMethodZeroTimes() {
+		bookKeeper.issuance(invoiceRequest, taxPolicy);
+		verify(taxPolicy, times(0)).calculateTax(any(ProductType.class), any(Money.class));
 	}
 }
