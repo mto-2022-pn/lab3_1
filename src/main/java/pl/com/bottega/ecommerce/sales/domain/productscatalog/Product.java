@@ -14,8 +14,7 @@ public class Product extends BaseAggregateRoot {
 
     private ProductType productType;
 
-    public Product(Id aggregateId, Money price, String name, ProductType productType) {
-        this.id = aggregateId;
+    public Product(Money price, String name, ProductType productType) {
         this.price = price;
         this.name = name;
         this.productType = productType;
@@ -38,6 +37,10 @@ public class Product extends BaseAggregateRoot {
     }
 
     public ProductData generateSnapshot() {
-        return new ProductData(getId(), price, name, productType, new Date());
+        return new ProductDataBuilder().withProductId(getId()).withPrice(price).withName(name).withType(productType).withSnapshotDate(new Date()).build();
     }
+
+
 }
+
+
