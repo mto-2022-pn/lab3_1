@@ -11,6 +11,7 @@ import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -60,4 +61,9 @@ class BookKeeperTest {
 		assertEquals(invoice.getItems().size(), 5);
 	}
 
+	@Test
+	void invoiceWithZeroFieldsRequestShouldReturnInvoiceWithZeroFields(){
+		Invoice invoice = bookKeeper.issuance(invoiceRequest, taxPolicy);
+		assertTrue(invoice.getItems().isEmpty());
+	}
 }
