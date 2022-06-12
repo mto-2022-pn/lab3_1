@@ -14,11 +14,10 @@ public class Product extends BaseAggregateRoot {
 
     private ProductType productType;
 
-    private Product(final ProductBuilder builder) {
-        this.id = builder.id;
-        this.price = builder.price;
-        this.name = builder.name;
-        this.productType = builder.productType;
+    public Product(Money price, String name, ProductType productType) {
+        this.price = price;
+        this.name = name;
+        this.productType = productType;
     }
 
     public boolean isAvailable() {
@@ -38,40 +37,10 @@ public class Product extends BaseAggregateRoot {
     }
 
     public ProductData generateSnapshot() {
-        return new ProductData(getId(), price, name, productType, new Date());
+        return new ProductDataBuilder().withProductId(getId()).withPrice(price).withName(name).withType(productType).withSnapshotDate(new Date()).build();
     }
 
-    static class ProductBuilder {
-        private Id id;
-        private Money price;
-        private String name;
-        private ProductType productType;
 
-        public ProductBuilder withId(Id id) {
-            this.id = id;
-            return this;
-        }
-
-        public ProductBuilder withPrice(Money price) {
-            this.price = price;
-            return this;
-        }
-
-        public ProductBuilder withName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public ProductBuilder withProductType(ProductType productType) {
-            this.productType = productType;
-            return this;
-        }
-
-        public Product build() {
-            return new Product(this);
-        }
-
-    }
 }
 
 

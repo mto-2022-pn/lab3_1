@@ -15,10 +15,7 @@
  */
 package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
-import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
-import pl.com.bottega.ecommerce.sales.domain.productscatalog.Product;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
-import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 class RequestItem {
@@ -47,31 +44,4 @@ class RequestItem {
         return quantity;
     }
 
-
-    static class RequestItemBuilder {
-
-        private ProductData productData;
-        private int quantity;
-        private Money totalCost;
-
-        public RequestItem.RequestItemBuilder withProductType(ProductData productData) {
-            this.productData = productData;
-            return this;
-        }
-
-        public RequestItem.RequestItemBuilder withQuantity(int quantity) {
-            this.quantity = quantity;
-            return this;
-        }
-
-        public RequestItem.RequestItemBuilder withTotalCost(Money totalCost) {
-            this.totalCost = totalCost;
-            return this;
-        }
-
-        public RequestItem build() {
-            return new RequestItem(productData, quantity, totalCost);
-        }
-
-    }
 }
