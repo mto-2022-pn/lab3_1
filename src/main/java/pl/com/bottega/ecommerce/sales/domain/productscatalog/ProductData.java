@@ -24,15 +24,15 @@ import pl.com.bottega.ecommerce.sharedkernel.Money;
 public class ProductData {
 	private Id productId;
 	private Money price;
-	
+
 	private String name;
-	
+
 	private Date snapshotDate;
-		
+
 	private ProductType type;
 
-	
-	ProductData(Id productId, Money price, String name, ProductType type, 
+
+	ProductData(Id productId, Money price, String name, ProductType type,
 			Date snapshotDate) {
 		this.productId = productId;
 		this.price = price;
@@ -56,7 +56,7 @@ public class ProductData {
 	public Date getSnapshotDate() {
 		return snapshotDate;
 	}
-	
+
 	public ProductType getType() {
 		return type;
 	}
@@ -101,6 +101,6 @@ public class ProductData {
 			return false;
 		return true;
 	}
-	
+
 
 }

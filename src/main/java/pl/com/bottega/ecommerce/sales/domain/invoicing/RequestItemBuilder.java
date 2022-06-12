@@ -2,13 +2,14 @@ package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
 
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
+import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductDataBuilder;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 public class RequestItemBuilder {
 
-	private ProductData productData;
-	private int quantity;
-	private Money totalCost;
+	private ProductData productData = new ProductDataBuilder().build();
+	private int quantity = 1;
+	private Money totalCost = Money.ZERO;
 
 	public RequestItemBuilder withProductType(ProductData productData) {
 		this.productData = productData;

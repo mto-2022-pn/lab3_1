@@ -3,9 +3,9 @@ package pl.com.bottega.ecommerce.sales.domain.productscatalog;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 public class ProductBuilder {
-	private Money price;
-	private String name;
-	private ProductType productType;
+	private Money price = Money.ZERO;
+	private String name = "Default";
+	private ProductType productType = ProductType.STANDARD;
 
 	public ProductBuilder withPrice(Money price) {
 		this.price = price;
